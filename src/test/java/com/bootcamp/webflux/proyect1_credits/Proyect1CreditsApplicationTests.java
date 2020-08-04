@@ -6,6 +6,7 @@ import java.util.List;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.reactive.AutoConfigureWebTestClient;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.reactive.server.WebTestClient;
@@ -14,8 +15,9 @@ import com.bootcamp.webflux.proyect1_credits.models.documents.Credits;
 import com.bootcamp.webflux.proyect1_credits.models.services.CreditsService;
 
 import reactor.core.publisher.Mono;
-
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+//para el mock
+@AutoConfigureWebTestClient
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.MOCK)//RANDOM_PORT
 class Proyect1CreditsApplicationTests {
 
 	@Autowired
@@ -29,7 +31,7 @@ class Proyect1CreditsApplicationTests {
 	void listTest() {
 		
 		client.get()
-		.uri("api/v2/credits")
+		.uri("/api/credits")
 		.accept(MediaType.APPLICATION_JSON_UTF8)
 		.exchange()
 		.expectStatus().isOk()
@@ -51,7 +53,7 @@ class Proyect1CreditsApplicationTests {
 		Credits credits = service.findByIdCustomer("qwe9888").block();
 		
 		client.get()
-		.uri("api/v2/credits/{id}", Collections.singletonMap("id", credits.getId()))
+		.uri("/api/credits/{id}", Collections.singletonMap("id", credits.getId()))
 		.accept(MediaType.APPLICATION_JSON_UTF8)
 		.exchange()
 		.expectStatus().isOk()
@@ -71,7 +73,7 @@ class Proyect1CreditsApplicationTests {
 		
 		Credits credits = new Credits("pop9876", "Credito Empresarial", 0.00, 0.00, 800.00);
 		client.post()
-		.uri("api/v2/credits")
+		.uri("/api/credits")
 		.accept(MediaType.APPLICATION_JSON_UTF8)
 		.contentType(MediaType.APPLICATION_JSON_UTF8)
 		.body(Mono.just(credits), Credits.class)
@@ -95,7 +97,7 @@ class Proyect1CreditsApplicationTests {
 		
 		Credits creditsEdit = new Credits("qwe0990", "Credito Personal", 0.00, 0.00, 8000.00);
 		client.put()
-		.uri("api/v2/credits/{id}", Collections.singletonMap("id", credits.getId()))
+		.uri("/api/credits/{id}", Collections.singletonMap("id", credits.getId()))
 		.accept(MediaType.APPLICATION_JSON_UTF8)
 		.contentType(MediaType.APPLICATION_JSON_UTF8)
 		.body(Mono.just(creditsEdit), Credits.class)
@@ -115,7 +117,7 @@ class Proyect1CreditsApplicationTests {
 		Credits credits = service.findByIdCustomer("poi89000").block();
 		
 		client.delete()
-		.uri("api/v2/credits/{id}", Collections.singletonMap("id", credits.getId()))
+		.uri("/api/credits/{id}", Collections.singletonMap("id", credits.getId()))
 		.exchange()
 		.expectStatus().isNoContent()
 		.expectBody()
